@@ -8,7 +8,7 @@ exports.config = {
         browserName: 'chrome',
         shardTestFiles: true,
         chromeOptions: {
-            args: [--headless"],
+            args: ["--headless"],
             prefs: {
                'profile.managed_default_content_settings.notifications': 1
             }
