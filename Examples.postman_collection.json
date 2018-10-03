@@ -1,0 +1,571 @@
+{
+	"info": {
+		"_postman_id": "cd42899e-1eb8-452e-9723-530cabaa7377",
+		"name": "Examples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Chai Mocha",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa91e41a-afe0-4f2a-885f-84f773c471ee",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setGlobalVariable('postmanBDD', responseBody);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": "http://bigstickcarpet.com/postman-bdd/dist/postman-bdd.min.js"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eafc6806-58c7-493a-a0d1-1a8bf1854007",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Verifications\",()=>{",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        response.time.should.be.below(800); ",
+							"    });",
+							"})  "
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {},
+				"url": "{{url}}/API/v8/projects"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "177838fd-f4f1-4dd7-8ad9-a3ef4a7daa28",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"pm.environment.set('projectId',response.body.id);",
+							"pm.globals.set('projectName',response.body.name);",
+							"pm.environment.set('name',response.body.name);",
+							"",
+							"describe(\"Example\",() => {",
+							"    it(\"Validate name\",() => {",
+							"        pm.expect(pm.environment.get('name')).to.equals(\"Tsuzuki\"); ",
+							"        expect(pm.environment.get('name')).to.equals(\"Tsuzuki\");",
+							"    });",
+							"    it(\"should be a 200 reponse\",() => {",
+							"        expect(pm.response.to.have.status(200));",
+							"    });",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        response.time.should.be.below(800); ",
+							"    });",
+							"    ",
+							"    it(\"Validate Json schema\",()=>{",
+							"        var schemaResponse = JSON.parse(responseBody);",
+							"        expect(schemaResponse).to.have.schema(pm.environment.get('project_schema')); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{initialName}}\"\n}"
+				},
+				"url": "{{url}}/API/v8/projects"
+			},
+			"response": []
+		},
+		{
+			"name": "Get a project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "603d2c13-dd57-4dbf-8819-7ae66efa18fc",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Project Data\",()=> {",
+							"    it(\"Should have the correct state name\",()=>{",
+							"        var data = JSON.parse(responseBody);",
+							"        expect(data.name).to.equal(pm.globals.get('projectName'));",
+							"    });",
+							"    ",
+							"    it(\"should be a 200 reponse\",() => {",
+							"        expect(pm.response.to.have.status(200));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"    ",
+							"    it(\"Validate Json schema\",()=>{",
+							"        var schemaResponse = JSON.parse(responseBody);",
+							"        expect(schemaResponse).to.have.schema(pm.environment.get('project_schema')); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/projects/{{projectId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "610bcb6e-f65b-4855-a078-d227b7b8e008",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"{{updateName}}\"\n\t\n}"
+				},
+				"url": "{{url}}/API/v8/projects/{{projectId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c856dce4-0986-4388-b06a-2b5b5104d2c1",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "{{url}}/API/v8/projects/{{projectId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0836d58f-d335-4a16-9d7c-0af419d31aa7",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 200 reponse\",() => {",
+							"        expect(pm.response.to.have.status(200));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f0f9ca3-b054-4298-a6bb-cb298f380131",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"pm.environment.set('taskId',response.body.id);",
+							"pm.globals.set('content',response.body.content);eval(globals.postmanBDD);",
+							"",
+							"var appointmentResponse = response.body.content;",
+							"",
+							"describe(\"Example\",() => {",
+							"    it(\"should be a 200 reponse\",() => {",
+							"        expect(pm.response.to.have.status(200));",
+							"    });",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        response.time.should.be.below(800); ",
+							"    });",
+							"    ",
+							"    it(\"Validate Json schema\",()=>{",
+							"        var schemaResponse = JSON.parse(responseBody);",
+							"        expect(schemaResponse).to.have.schema(pm.environment.get('task_Schema')); ",
+							"    });",
+							"    ",
+							"    it(\"Validate name\",() => {",
+							"        expect(response.body.content).to.equals(appointmentResponse); ",
+							"    });",
+							"    ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"content\": \"{{appointment}}\", \n\t\"due_string\": \"tomorrow at 12:00\", \n\t\"due_lang\": \"en\", \n\t\"priority\": 4\n\t\n}"
+				},
+				"url": "{{url}}/API/v8/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "Get a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "36ca41b4-fa8f-4329-bc05-6c3c8f834fbb",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"var appointmentResponse = response.body.content;",
+							"",
+							"describe(\"Example\",() => {",
+							"    it(\"should be a 200 reponse\",() => {",
+							"        expect(pm.response.to.have.status(200));",
+							"    });",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        response.time.should.be.below(800); ",
+							"    });",
+							"    ",
+							"    it(\"Validate Json schema\",()=>{",
+							"        var schemaResponse = JSON.parse(responseBody);",
+							"        expect(schemaResponse).to.have.schema(pm.environment.get('task_Schema')); ",
+							"    });",
+							"    ",
+							"    it(\"Validate name\",() => {",
+							"        expect(response.body.content).to.equals(appointmentResponse); ",
+							"    });",
+							"    ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/tasks/{{taskId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f2817d8a-3e22-49ba-9b45-7c77848454bb",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"content\": \"{{updateTask}}\"\n}"
+				},
+				"url": "{{url}}/API/v8/tasks/{{taskId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Close a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "95a78861-bf95-4348-a3cd-356e99d7f33c",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/tasks/{{taskId}}/close"
+			},
+			"response": []
+		},
+		{
+			"name": "Reopen a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b0d87cd-45b3-4fd7-b8be-c1ca347d9f7c",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/tasks/{{taskId}}/reopen"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "beca7975-70db-4029-94f6-e215c27c3645",
+						"type": "text/javascript",
+						"exec": [
+							"eval(globals.postmanBDD);",
+							"",
+							"describe(\"Validate Update Data\",()=> {",
+							"    it(\"should be a 204 reponse\",() => {",
+							"        expect(pm.response.to.have.status(204));",
+							"    });",
+							"    ",
+							"    it(\"Response should be less 800 ms\",() => {",
+							"        expect(response.time.should.be.below(800)); ",
+							"    });",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": "{{url}}/API/v8/tasks/{{taskId}}"
+			},
+			"response": []
+		}
+	]
+}
