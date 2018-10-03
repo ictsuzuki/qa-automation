@@ -1,5 +1,5 @@
 # QA Automation Certification
-Repository created for the QA Automation Certification
+Repository created for the QA Automation Certification.
 
 # Goals
 
